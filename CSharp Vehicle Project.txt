@@ -1,0 +1,246 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Car_OOP
+{
+    
+ 
+    // Enum for Vehicle Type
+    public enum VehicleType
+    {
+        Car = 1,
+        Motorcycle
+    }
+
+    // Interface for Interior Design
+    public interface IInteriorDesign
+    {
+        List<string> InteriorDesigns { get; set; }
+    }
+
+    // Interface for Exterior Design
+    public interface IExteriorDesign
+    {
+        List<string> ExteriorDesigns { get; set; }
+    }
+
+    // Base class for Vehicle
+    public abstract class Vehicle
+    {
+        public string ModelNo { get; set; }
+        public DateTime YearMake { get; set; }
+        public abstract VehicleType Type { get; }
+    }
+
+    // Common properties for FourWheeler
+    public abstract class FourWheeler : Vehicle, IInteriorDesign
+    {
+        public int NumberOfSeat { get; set; }
+        public int NumberOfGear { get; set; }
+        public int NumberOfDoor { get; set; }
+        public int EngineCapacityInCC { get; set; }
+        public List<string> InteriorDesigns { get; set; } = new List<string>();
+
+        // Implement IInteriorDesign interface
+        public void AddInteriorDesign(string design)
+        {
+            InteriorDesigns.Add(design);
+        }
+    }
+
+    // Common properties for TwoWheeler
+    public abstract class TwoWheeler : Vehicle, IExteriorDesign
+    {
+        public int NumberOfGear { get; set; }
+        public List<string> ExteriorDesigns { get; set; } = new List<string>();
+
+        // Implement IExteriorDesign interface
+        public void AddExteriorDesign(string design)
+        {
+            ExteriorDesigns.Add(design);
+        }
+    }
+
+    // Car class inheriting FourWheeler
+    sealed class Car : FourWheeler
+    {
+        public override VehicleType Type => VehicleType.Car;
+    }
+
+    // Motorcycle class inheriting TwoWheeler
+    sealed class Motorcycle : TwoWheeler
+    {
+        public override VehicleType Type => VehicleType.Motorcycle;
+        public int EngineCapacityInCC { get; set; }
+        public string StartingMethod { get; set; }
+        public int MaximumPowerInBPH { get; set; }
+        public int MaximumTorqueInNM { get; set; }
+        public int MileageInKMPL { get; set; }
+        public string Cooling { get; set; }
+        public string FrontBrake { get; set; }
+        public string RearBrake { get; set; }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("..........Available Vehicle Types..........");
+            Console.WriteLine("1: Car");
+            Console.WriteLine("2: Motorcycle");
+
+            Console.Write("Please Choose Your Preferred Vehicle Type (1 or 2): ");
+            int choice = int.Parse(Console.ReadLine());
+
+            Vehicle selectedVehicle = null;
+
+            switch (choice)
+            {
+                case (int)VehicleType.Car:
+                    selectedVehicle = CreateCar();
+                    break;
+                case (int)VehicleType.Motorcycle:
+                    selectedVehicle = CreateMotorcycle();
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice. Exiting...");
+                    return;
+            }
+
+            PrintVehicleInfo(selectedVehicle);
+        }
+
+        static Car CreateCar()
+        {
+            Car car = new Car();
+
+            Console.Write("Choose Your Model No: ");
+            car.ModelNo = Console.ReadLine();
+
+            Console.Write("Choose Year of Manufacture (mm/dd/yyyy): ");
+            car.YearMake = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Number Of Seat: ");
+            car.NumberOfSeat = int.Parse(Console.ReadLine());
+
+            Console.Write("Number Of Gear: ");
+            car.NumberOfGear = int.Parse(Console.ReadLine());
+
+            Console.Write("Number Of Door: ");
+            car.NumberOfDoor = int.Parse(Console.ReadLine());
+
+            Console.Write("Engine Capacity (CC): ");
+            car.EngineCapacityInCC = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("....... Interior Designs.......");
+            while (true)
+            {
+                Console.Write("Enter an Interior Design (or type 'done' to finish): ");
+                string design = Console.ReadLine();
+
+                if (design.ToLower() == "done")
+                    break;
+
+                car.AddInteriorDesign(design);
+            }
+
+            return car;
+        }
+
+        static Motorcycle CreateMotorcycle()
+        {
+            Motorcycle motorcycle = new Motorcycle();
+
+            Console.Write("Choose Your Model No: ");
+            motorcycle.ModelNo = Console.ReadLine();
+
+            Console.Write("Choose Year of Manufacture (mm/dd/yyyy): ");
+            motorcycle.YearMake = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Number Of Gear: ");
+            motorcycle.NumberOfGear = int.Parse(Console.ReadLine());
+
+            Console.Write("Starting Method (Key/Button/Paddle): ");
+            motorcycle.StartingMethod = Console.ReadLine();
+
+            Console.Write("Engine Capacity (CC): ");
+            motorcycle.EngineCapacityInCC = int.Parse(Console.ReadLine());
+
+            Console.Write("Maximum Power (BPH): ");
+            motorcycle.MaximumPowerInBPH = int.Parse(Console.ReadLine());
+
+            Console.Write("Maximum Torque (NM): ");
+            motorcycle.MaximumTorqueInNM = int.Parse(Console.ReadLine());
+
+            Console.Write("Mileage (KMPL): ");
+            motorcycle.MileageInKMPL = int.Parse(Console.ReadLine());
+
+            Console.Write("Cooling (Water/Air): ");
+            motorcycle.Cooling = Console.ReadLine();
+
+            Console.Write("Front Brake (Mechanical/Oil/Hydraulic): ");
+            motorcycle.FrontBrake = Console.ReadLine();
+
+            Console.Write("Rear Brake (Mechanical/Oil): ");
+            motorcycle.RearBrake = Console.ReadLine();
+
+            Console.WriteLine("....... Exterior Designs.......");
+            while (true)
+            {
+                Console.Write("Enter an Exterior Design (or type 'done' to finish): ");
+                string design = Console.ReadLine();
+
+                if (design.ToLower() == "done")
+                    break;
+
+                motorcycle.AddExteriorDesign(design);
+            }
+
+            return motorcycle;
+        }
+
+        static void PrintVehicleInfo(Vehicle vehicle)
+        {
+            Console.WriteLine("============Your Chosen Vehicle's Info=============");
+            Console.WriteLine($"Your Vehicle Type: {vehicle.Type}");
+            Console.WriteLine($"Model No: {vehicle.ModelNo}");
+            Console.WriteLine($"Year of Manufacture: {vehicle.YearMake}");
+
+            if (vehicle is FourWheeler fourWheeler)
+            {
+                Console.WriteLine($"Number of Seat: {fourWheeler.NumberOfSeat}");
+                Console.WriteLine($"Number of Gear: {fourWheeler.NumberOfGear}");
+                Console.WriteLine($"Number of Door: {fourWheeler.NumberOfDoor}");
+                Console.WriteLine($"Engine Capacity: {fourWheeler.EngineCapacityInCC} CC");
+                Console.WriteLine("....... Interior Designs.......");
+                foreach (var design in fourWheeler.InteriorDesigns)
+                {
+                    Console.WriteLine($"- {design}");
+                }
+            }
+
+            if (vehicle is Motorcycle motorcycle)
+            {
+                Console.WriteLine($"Number of Gear: {motorcycle.NumberOfGear}");
+                Console.WriteLine($"Starting Method: {motorcycle.StartingMethod}");
+                Console.WriteLine($"Engine Capacity: {motorcycle.EngineCapacityInCC} CC");
+                Console.WriteLine($"Maximum Power: {motorcycle.MaximumPowerInBPH} BPH");
+                Console.WriteLine($"Maximum Torque: {motorcycle.MaximumTorqueInNM} NM");
+                Console.WriteLine($"Mileage: {motorcycle.MileageInKMPL} KMPL");
+                Console.WriteLine($"Cooling: {motorcycle.Cooling}");
+                Console.WriteLine($"Front Brake: {motorcycle.FrontBrake}");
+                Console.WriteLine($"Rear Brake: {motorcycle.RearBrake}");
+                Console.WriteLine("....... Exterior Designs.......");
+                foreach (var design in motorcycle.ExteriorDesigns)
+                {
+                    Console.WriteLine($"- {design}");
+                }
+            }
+        }
+    }
+
+}
